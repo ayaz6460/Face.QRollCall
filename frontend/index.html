@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QRollCall — Smart Attendance System</title>
+    <meta name="description" content="QRollCall – QR-based smart attendance system with real-time tracking, fraud detection and parent notifications for colleges." />
+
+    <!-- Google Fonts: Inter + Manrope (matching Stitch design system) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@700;800&display=swap" rel="stylesheet" />
+
+    <!-- Material Symbols Outlined (matching Stitch design system) -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+
+    <style>
+      /* Match Stitch color tokens globally */
+      :root {
+        --stitch-primary:            #0058be;
+        --stitch-primary-container:  #2170e4;
+        --stitch-on-primary:         #ffffff;
+        --stitch-surface:            #f7f9fb;
+        --stitch-on-surface:         #191c1e;
+        --stitch-on-surface-variant: #424754;
+        --stitch-outline-variant:    #c2c6d6;
+        --stitch-tertiary:           #924700;
+        --stitch-tertiary-fixed:     #ffdcc6;
+        --stitch-error:              #ba1a1a;
+        --stitch-error-container:    #ffdad6;
+        --stitch-success:            #1a7a4a;
+        --stitch-success-surface:    #e8f5ee;
+        --manrope-font: 'Manrope', sans-serif;
+        --inter-font:   'Inter', sans-serif;
+      }
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        font-family: 'Material Symbols Outlined';
+        font-style: normal;
+        line-height: 1;
+        display: inline-block;
+        vertical-align: middle;
+      }
+      body { font-family: var(--inter-font); -webkit-tap-highlight-color: transparent; }
+      .font-headline { font-family: var(--manrope-font); }
+      .stitch-primary-gradient { background: linear-gradient(135deg, #0058be 0%, #2170e4 100%); }
+      .stitch-glass {
+        background: rgba(255,255,255,.7);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
