@@ -1,8 +1,22 @@
 // src/api/api.js
 import axios from 'axios';
 
-const configuredBaseUrl = import.meta.env.VITE_API_BASE_URL;
-const baseURL = configuredBaseUrl ? configuredBaseUrl.replace(/\/$/, '') : '/api';
+const configuredBaseUrl = (import.meta.env.VITE_API_BASE_URL || '').trim();
+
+const normalizeApiBaseUrl = (value) => {
+  if (!value) return '/api';
+
+  // Relative env values (e.g., /api) are used as-is.
+  if (value.startsWith('/')) {
+    return value.endsWith('/api') ? value : `${value.replace(/\/$/, '')}/api`;
+  }
+
+  // Absolute values auto-append /api when omitted.
+  const cleaned = value.replace(/\/$/, '');
+  return /\/api$/i.test(cleaned) ? cleaned : `${cleaned}/api`;
+};
+
+const baseURL = normalizeApiBaseUrl(configuredBaseUrl);
 
 const api = axios.create({
   baseURL,
