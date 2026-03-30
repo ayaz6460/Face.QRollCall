@@ -12,6 +12,8 @@ import LiveAttendance from './pages/LiveAttendance';
 import FraudDetection from './pages/FraudDetection';
 import Notifications from './pages/Notifications';
 import Analytics from './pages/Analytics';
+import StudentAnalytics from './pages/StudentAnalytics';
+import StudentNotifications from './pages/StudentNotifications';
 import StudentDetail from './pages/StudentDetail';
 import Students from './pages/Students';
 import AdminDashboard, { AdminTeachersPage, AdminStudentsPage, AdminSessionsPage, AdminAttendancePage, AdminCommsPage, AdminAdminsPage } from './pages/AdminDashboard';
@@ -55,6 +57,8 @@ function AppRoutes() {
       
       {/* Student Route */}
       <Route path="/student" element={<ProtectedRoute element={<StudentDashboard />} roles={['student']} />} />
+      <Route path="/student/analytics" element={<ProtectedRoute element={<StudentAnalytics />} roles={['student']} />} />
+      <Route path="/student/notifications" element={<ProtectedRoute element={<StudentNotifications />} roles={['student']} />} />
       <Route path="/teacher" element={<ProtectedRoute element={<TeacherDashboard />} roles={['teacher']} />} />
       <Route path="/scanner" element={<ProtectedRoute element={<QRScanner />} roles={['student']} />} />
       <Route path="/result" element={<ProtectedRoute element={<AttendanceResult />} roles={['student']} />} />

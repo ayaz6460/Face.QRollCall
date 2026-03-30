@@ -9,8 +9,8 @@ import {
 const studentNav = [
   { icon: LayoutDashboard, label: 'Dashboard',  path: '/student' },
   { icon: ScanLine,        label: 'Scan QR',    path: '/scanner' },
-  { icon: BarChart2,       label: 'Analytics',  path: '/analytics' },
-  { icon: Bell,            label: 'Notifications', path: '/notifications' },
+  { icon: BarChart2,       label: 'Analytics',  path: '/student/analytics' },
+  { icon: Bell,            label: 'Notifications', path: '/student/notifications' },
 ];
 
 const adminNav = [
