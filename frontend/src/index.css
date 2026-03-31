@@ -203,7 +203,7 @@ img { max-width: 100%; }
   }
 
   .topbar {
-    padding: 0 10px;
+    padding: 0 10px 0 50px;
   }
 
   .topbar-avatar {
@@ -1144,7 +1144,7 @@ tbody tr:hover td { background: var(--primary-light); }
   }
 
   .topbar {
-    padding: 0 10px;
+    padding: 0 10px 0 50px;
   }
 
   .topbar .btn-icon.btn,
@@ -1178,5 +1178,217 @@ tbody tr:hover td { background: var(--primary-light); }
     max-height: calc(100dvh - 12px);
     border-radius: 14px;
     padding: 14px;
+  }
+}
+
+/* ─── Admin Section Responsive Fixes ───────────────────────────────────── */
+.admin-page {
+  width: 100%;
+  min-width: 0;
+}
+
+.admin-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.admin-data-table {
+  min-width: 860px;
+}
+
+.admin-row-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.admin-modal-shell {
+  width: min(620px, calc(100vw - 28px)) !important;
+  max-height: calc(100dvh - 28px);
+  overflow-y: auto;
+}
+
+.admin-page .dashboard-toolbar {
+  gap: 12px;
+}
+
+.admin-page .dashboard-toolbar-left,
+.admin-page .dashboard-toolbar-right {
+  min-width: 0;
+}
+
+.admin-page .dashboard-toolbar-left h3 {
+  margin-right: 4px;
+}
+
+.admin-search {
+  min-width: 220px;
+}
+
+.admin-overview-charts .card,
+.admin-overview-comms .card {
+  min-width: 0;
+}
+
+.admin-toolbar-pills {
+  min-width: 0;
+}
+
+.admin-toolbar-pills .btn {
+  white-space: nowrap;
+}
+
+.admin-channel-row {
+  flex-wrap: wrap;
+}
+
+.admin-modal-actions {
+  display: flex;
+  gap: 12px;
+}
+
+@media (max-width: 1024px) {
+  .admin-page .grid-4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .admin-page .dashboard-toolbar-left,
+  .admin-page .dashboard-toolbar-right {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .admin-page .dashboard-toolbar-right {
+    justify-content: flex-start;
+  }
+
+  .admin-search {
+    width: 100% !important;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .admin-search .form-control {
+    width: 100%;
+  }
+
+  .admin-page .card-body[style*='height: 260px'] {
+    height: 220px !important;
+    padding: 12px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-page {
+    padding: 12px;
+  }
+
+  .admin-page .grid-4,
+  .admin-page .grid-3,
+  .admin-page .grid-2 {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-page .dashboard-toolbar {
+    flex-direction: column;
+    align-items: stretch !important;
+  }
+
+  .admin-page .dashboard-toolbar-left,
+  .admin-page .dashboard-toolbar-right {
+    display: flex;
+    width: 100%;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .admin-page .dashboard-toolbar-left .btn,
+  .admin-page .dashboard-toolbar-right .btn {
+    flex: 1 1 calc(50% - 8px);
+    min-width: 120px;
+  }
+
+  .admin-page .dashboard-toolbar-left h3 {
+    width: 100%;
+    margin-bottom: 2px;
+  }
+
+  .admin-data-table {
+    min-width: 720px;
+  }
+
+  .admin-row-actions {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+
+  .admin-modal-backdrop {
+    align-items: flex-start !important;
+    padding: 10px;
+    overflow-y: auto;
+  }
+
+  .admin-modal-shell {
+    width: 100% !important;
+    max-width: none !important;
+    max-height: none;
+    margin: 0;
+    border-radius: 16px !important;
+    padding: 18px !important;
+  }
+
+  .admin-overview-charts .card,
+  .admin-overview-comms .card {
+    overflow: hidden;
+  }
+
+  .admin-overview-charts canvas {
+    max-height: 220px;
+  }
+
+  .admin-toolbar-pills .btn {
+    flex: 1 1 calc(50% - 8px);
+  }
+
+  .admin-modal-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .admin-modal-actions .btn {
+    width: 100%;
+  }
+
+  .admin-channel-row label {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-page {
+    padding: 10px;
+  }
+
+  .admin-page .dashboard-toolbar-left .btn,
+  .admin-page .dashboard-toolbar-right .btn {
+    flex: 1 1 100%;
+  }
+
+  .admin-page .dashboard-toolbar-left,
+  .admin-page .dashboard-toolbar-right {
+    gap: 6px;
+  }
+
+  .admin-data-table {
+    min-width: 680px;
+  }
+
+  .admin-modal-shell {
+    border-radius: 14px !important;
+    padding: 14px !important;
+  }
+
+  .admin-toolbar-pills .btn {
+    flex: 1 1 100%;
   }
 }

@@ -28,7 +28,7 @@ function AdminLayout({ title, subtitle, children }) {
       <Sidebar role="admin" userName={user?.name || 'Administrator'} onLogout={logout} />
       <div className="main-content">
         <Topbar title={title} subtitle={subtitle || 'Administration Panel'} userName={user?.name || 'Admin'} />
-        <div className="page-content fade-in">{children}</div>
+        <div className="page-content fade-in admin-page">{children}</div>
       </div>
     </div>
   );
@@ -68,13 +68,13 @@ export function AdminOverviewPage() {
         <div className="stat-card"><div className="stat-label">Global Attendance</div><div className="stat-value text-primary">{stats?.overallPercent || '--'}%</div></div>
       </div>
       {analyticsData && (
-        <div className="grid grid-3 gap-20" style={{ marginBottom: 24 }}>
+        <div className="grid grid-3 gap-20 admin-overview-charts" style={{ marginBottom: 24 }}>
           <div className="card"><div className="card-header"><span className="card-title">Attendance by Subject (%)</span></div><div className="card-body" style={{ height: 260, padding: 20 }}><Bar data={barData} options={chartOpts} /></div></div>
           <div className="card"><div className="card-header"><span className="card-title">Presence Trend (Last 7 Days)</span></div><div className="card-body" style={{ height: 260, padding: 20 }}><Line data={lineData} options={lineOpts} /></div></div>
           <div className="card"><div className="card-header"><span className="card-title">Overall Distribution</span></div><div className="card-body" style={{ height: 260, padding: 20, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><div style={{ width: '80%', height: '80%' }}><Pie data={pieData} options={{ ...chartOpts, scales: undefined }} /></div></div></div>
         </div>
       )}
-      <div className="grid grid-2 gap-20">
+      <div className="grid grid-2 gap-20 admin-overview-comms">
         <div className="card" style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
           <div className="stat-icon" style={{ background: '#fef2f2', color: '#dc2626' }}><Mail size={24} /></div>
           <div><div className="stat-value">{stats?.communications?.emails || 0}</div><div className="stat-label">SMTP Emails Sent</div></div>
@@ -116,8 +116,8 @@ export function AdminTeachersPage() {
         <h3>Teacher Management</h3>
         <button className="btn btn-primary" onClick={openAddModal}><Plus size={16} /> Add Teacher</button>
       </div>
-      <div className="card"><div className="card-body" style={{ padding: 0 }}>
-        <table className="data-table"><thead><tr>
+      <div className="card"><div className="card-body admin-table-wrap" style={{ padding: 0 }}>
+        <table className="data-table admin-data-table"><thead><tr>
           <th>Name</th><th>Subjects</th><th>Email</th><th>Department</th><th style={{ width: 80, textAlign: 'center' }}>Actions</th>
         </tr></thead><tbody>
           {teachers.map(t => (
@@ -127,7 +127,7 @@ export function AdminTeachersPage() {
               <td style={{ color: 'var(--text-secondary)' }}>{t.email}</td>
               <td style={{ color: 'var(--text-muted)' }}>{t.department || '—'}</td>
               <td style={{ textAlign: 'center' }}>
-                <div style={{ display: 'flex', gap: 6, justifyContent: 'center' }}>
+                <div className="admin-row-actions" style={{ display: 'flex', gap: 6, justifyContent: 'center' }}>
                   <button className="btn btn-icon" onClick={() => openEditModal(t)} style={{ padding: 6, color: 'var(--text-secondary)' }} title="Edit"><Edit2 size={16} /></button>
                   <button
                     className="btn btn-icon"
@@ -157,8 +157,8 @@ export function AdminTeachersPage() {
       </div></div>
 
       {showModal && createPortal(
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 99999 }}>
-          <div className="card fade-in" style={{ width: '100%', maxWidth: 450, padding: 32, borderRadius: 24, boxShadow: '0 20px 40px rgba(0,0,0,0.2)' }} onClick={e => e.stopPropagation()}>
+        <div className="admin-modal-backdrop" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 99999 }}>
+          <div className="card fade-in admin-modal-shell" style={{ width: '100%', maxWidth: 450, padding: 32, borderRadius: 24, boxShadow: '0 20px 40px rgba(0,0,0,0.2)' }} onClick={e => e.stopPropagation()}>
             <h3 style={{ marginBottom: 24, fontSize: 22, fontWeight: 700 }}>{isEdit ? 'Edit Teacher' : 'Add New Teacher'}</h3>
             <form onSubmit={handleSave}><div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
               <div><label style={{ display: 'block', fontSize: 13, marginBottom: 6, fontWeight: 600, color: 'var(--text-secondary)' }}>Full Name</label><input required className="form-control" style={{ width: '100%', padding: '12px 16px', borderRadius: 12 }} value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} placeholder="Prof. Jane Doe" /></div>
@@ -166,7 +166,7 @@ export function AdminTeachersPage() {
               <div><label style={{ display: 'block', fontSize: 13, marginBottom: 6, fontWeight: 600, color: 'var(--text-secondary)' }}>Department / Subjects</label><input className="form-control" style={{ width: '100%', padding: '12px 16px', borderRadius: 12 }} value={formData.department} onChange={e => setFormData({...formData, department: e.target.value})} placeholder="Computer Science, Mathematics" /></div>
               {!isEdit && <div><label style={{ display: 'block', fontSize: 13, marginBottom: 6, fontWeight: 600, color: 'var(--text-secondary)' }}>Password</label><input required type="password" className="form-control" style={{ width: '100%', padding: '12px 16px', borderRadius: 12 }} value={formData.password} onChange={e => setFormData({...formData, password: e.target.value})} placeholder="6+ characters" /></div>}
             </div>
-            <div style={{ display: 'flex', gap: 12, marginTop: 32 }}>
+            <div className="admin-modal-actions" style={{ display: 'flex', gap: 12, marginTop: 32 }}>
               <button type="button" className="btn btn-secondary" style={{ flex: 1, padding: 12, borderRadius: 12 }} onClick={() => setShowModal(false)}>Cancel</button>
               <button type="submit" className="btn btn-primary" style={{ flex: 1, padding: 12, borderRadius: 12 }}>{isEdit ? 'Save Changes' : 'Create'}</button>
             </div></form>
@@ -221,17 +221,17 @@ export function AdminStudentsPage() {
   return (
     <AdminLayout title="Students" subtitle="Student Roster & Management">
       <div className="dashboard-toolbar" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-        <div className="dashboard-toolbar-left" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+        <div className="dashboard-toolbar-left admin-toolbar-pills" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <h3>Student Roster</h3>
           <button className="btn btn-secondary btn-sm" onClick={openAddStudent} style={{ borderRadius: 20 }}><Plus size={14} /> Add</button>
           <button className="btn btn-primary btn-sm" disabled={!selectedIds.length} onClick={() => setShowMsgModal(true)} style={{ opacity: selectedIds.length ? 1 : .5, borderRadius: 20 }}>
             <Send size={14} /> Broadcast {selectedIds.length > 0 ? `(${selectedIds.length})` : ''}
           </button>
         </div>
-        <div className="input-icon-wrap dashboard-toolbar-search" style={{ width: 280 }}><Search size={15} className="icon" style={{ left: 14 }} /><input className="form-control" style={{ paddingLeft: 40, borderRadius: 20 }} placeholder="Search..." value={search} onChange={e => setSearch(e.target.value)} /></div>
+        <div className="input-icon-wrap dashboard-toolbar-search admin-search" style={{ width: 280 }}><Search size={15} className="icon" style={{ left: 14 }} /><input className="form-control" style={{ paddingLeft: 40, borderRadius: 20 }} placeholder="Search..." value={search} onChange={e => setSearch(e.target.value)} /></div>
       </div>
-      <div className="card"><div className="card-body" style={{ padding: 0 }}>
-        <table className="data-table"><thead><tr>
+      <div className="card"><div className="card-body admin-table-wrap" style={{ padding: 0 }}>
+        <table className="data-table admin-data-table"><thead><tr>
           <th style={{ width: 40, textAlign: 'center' }}><input type="checkbox" onChange={handleSelectAll} checked={filtered.length > 0 && selectedIds.length === filtered.length} /></th>
           <th>Student</th><th>Roll No</th><th>Email</th><th>Parent Phone</th><th>Actions</th>
         </tr></thead><tbody>
@@ -243,7 +243,7 @@ export function AdminStudentsPage() {
               <td style={{ color: 'var(--text-secondary)' }}>{s.email}</td>
               <td style={{ color: 'var(--text-secondary)', fontSize: 13 }}>{s.parent_phone || '—'}</td>
               <td>
-                <div style={{ display: 'flex', gap: 6 }}>
+                <div className="admin-row-actions" style={{ display: 'flex', gap: 6 }}>
                   <Link to={`/student/${s.id}`} className="btn btn-icon" style={{ padding: 6, color: 'var(--text-secondary)' }} title="View Profile"><User size={16} /></Link>
                   <button
                     className="btn btn-icon"
@@ -276,8 +276,8 @@ export function AdminStudentsPage() {
 
       {/* Add/Edit Student Modal */}
       {showStudentModal && createPortal(
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 99999 }}>
-          <div className="card fade-in" style={{ width: '100%', maxWidth: 450, padding: 32, borderRadius: 24, boxShadow: '0 20px 40px rgba(0,0,0,0.2)' }} onClick={e => e.stopPropagation()}>
+        <div className="admin-modal-backdrop" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 99999 }}>
+          <div className="card fade-in admin-modal-shell" style={{ width: '100%', maxWidth: 450, padding: 32, borderRadius: 24, boxShadow: '0 20px 40px rgba(0,0,0,0.2)' }} onClick={e => e.stopPropagation()}>
             <h3 style={{ marginBottom: 24, fontSize: 22, fontWeight: 700 }}>{isStudentEdit ? 'Edit Student' : 'Add New Student'}</h3>
             <form onSubmit={handleSaveStudent}><div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
               <div><label style={{ display: 'block', fontSize: 13, marginBottom: 6, fontWeight: 600, color: 'var(--text-secondary)' }}>Full Name</label><input required className="form-control" style={{ width: '100%', padding: '12px 16px', borderRadius: 12 }} value={studentFormData.name} onChange={e => setStudentFormData({...studentFormData, name: e.target.value})} placeholder="Arjun Kumar" /></div>
@@ -286,7 +286,7 @@ export function AdminStudentsPage() {
               <div><label style={{ display: 'block', fontSize: 13, marginBottom: 6, fontWeight: 600, color: 'var(--text-secondary)' }}>Parent Phone</label><input className="form-control" style={{ width: '100%', padding: '12px 16px', borderRadius: 12 }} value={studentFormData.parent_phone} onChange={e => setStudentFormData({...studentFormData, parent_phone: e.target.value})} placeholder="+91 98765 43210" /></div>
               {!isStudentEdit && <div><label style={{ display: 'block', fontSize: 13, marginBottom: 6, fontWeight: 600, color: 'var(--text-secondary)' }}>Password</label><input required type="password" className="form-control" style={{ width: '100%', padding: '12px 16px', borderRadius: 12 }} value={studentFormData.password} onChange={e => setStudentFormData({...studentFormData, password: e.target.value})} placeholder="6+ characters" /></div>}
             </div>
-            <div style={{ display: 'flex', gap: 12, marginTop: 32 }}>
+            <div className="admin-modal-actions" style={{ display: 'flex', gap: 12, marginTop: 32 }}>
               <button type="button" className="btn btn-secondary" style={{ flex: 1, padding: 12, borderRadius: 12 }} onClick={() => setShowStudentModal(false)}>Cancel</button>
               <button type="submit" className="btn btn-primary" style={{ flex: 1, padding: 12, borderRadius: 12 }}>{isStudentEdit ? 'Save Changes' : 'Create'}</button>
             </div></form>
@@ -296,8 +296,8 @@ export function AdminStudentsPage() {
 
       {/* Broadcast Modal */}
       {showMsgModal && createPortal(
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 99999 }}>
-          <div className="card fade-in" style={{ width: '100%', maxWidth: 520, padding: 32, borderRadius: 24, boxShadow: '0 20px 40px rgba(0,0,0,0.2)' }} onClick={e => e.stopPropagation()}>
+        <div className="admin-modal-backdrop" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 99999 }}>
+          <div className="card fade-in admin-modal-shell" style={{ width: '100%', maxWidth: 520, padding: 32, borderRadius: 24, boxShadow: '0 20px 40px rgba(0,0,0,0.2)' }} onClick={e => e.stopPropagation()}>
             <h3 style={{ marginBottom: 8, fontSize: 22, fontWeight: 700 }}>Send Broadcast</h3>
             <p style={{ color: 'var(--text-muted)', fontSize: 13, marginBottom: 20 }}>Sending to {selectedIds.length} student(s)</p>
             <div style={{ display: 'flex', gap: 8, marginBottom: 20, flexWrap: 'wrap' }}>
@@ -306,12 +306,12 @@ export function AdminStudentsPage() {
             <form onSubmit={handleSendBroadcast}><div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
               <div><label style={{ display: 'block', fontSize: 13, marginBottom: 6, fontWeight: 600 }}>Subject</label><input required className="form-control" style={{ width: '100%', padding: '12px 16px', borderRadius: 12 }} value={msgPayload.subject} onChange={e => setMsgPayload({...msgPayload, subject: e.target.value})} /></div>
               <div><label style={{ display: 'block', fontSize: 13, marginBottom: 6, fontWeight: 600 }}>Message</label><textarea required className="form-control" style={{ width: '100%', padding: '12px 16px', borderRadius: 12, minHeight: 120, resize: 'vertical' }} value={msgPayload.message} onChange={e => setMsgPayload({...msgPayload, message: e.target.value})} /></div>
-              <div style={{ display: 'flex', gap: 16 }}>
+              <div className="admin-channel-row" style={{ display: 'flex', gap: 16 }}>
                 <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer' }}><input type="checkbox" checked={msgPayload.email} onChange={e => setMsgPayload({...msgPayload, email: e.target.checked})} /> <Mail size={14} /> Email</label>
                 <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer' }}><input type="checkbox" checked={msgPayload.sms} onChange={e => setMsgPayload({...msgPayload, sms: e.target.checked})} /> <Smartphone size={14} /> SMS</label>
               </div>
             </div>
-            <div style={{ display: 'flex', gap: 12, marginTop: 24 }}>
+            <div className="admin-modal-actions" style={{ display: 'flex', gap: 12, marginTop: 24 }}>
               <button type="button" className="btn btn-secondary" style={{ flex: 1, padding: 12, borderRadius: 12 }} onClick={() => setShowMsgModal(false)}>Cancel</button>
               <button type="submit" className="btn btn-primary" style={{ flex: 1, padding: 12, borderRadius: 12 }} disabled={isSending}>{isSending ? <><Loader size={16} className="spin" /> Sending...</> : <><Send size={16} /> Send</>}</button>
             </div></form>
@@ -344,7 +344,7 @@ export function AdminSessionsPage() {
   return (
     <AdminLayout title="Sessions" subtitle="Session Registry & Management">
       <div className="dashboard-toolbar" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-        <div className="dashboard-toolbar-left" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+        <div className="dashboard-toolbar-left admin-toolbar-pills" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <h3>Session Registry</h3>
           <button className="btn btn-secondary btn-sm" onClick={() => setShowAddModal(true)} style={{ borderRadius: 20 }}><Plus size={14} /> Create Session</button>
           <button className="btn btn-sm" style={{ background: 'var(--danger)', color: 'white', borderRadius: 20, opacity: selectedTokens.length ? 1 : .5 }} disabled={!selectedTokens.length || isDeleting} onClick={handleBulkDelete}>
@@ -352,8 +352,8 @@ export function AdminSessionsPage() {
           </button>
         </div>
       </div>
-      <div className="card"><div className="card-body" style={{ padding: 0 }}>
-        <table className="data-table"><thead><tr>
+      <div className="card"><div className="card-body admin-table-wrap" style={{ padding: 0 }}>
+        <table className="data-table admin-data-table"><thead><tr>
           <th style={{ width: 40, textAlign: 'center' }}><input type="checkbox" onChange={handleSelectAll} checked={sessions.length > 0 && selectedTokens.length === sessions.length} /></th>
           <th>Subject</th><th>Teacher</th><th>Token</th><th>Status</th><th>Created</th><th>Actions</th>
         </tr></thead><tbody>
@@ -373,15 +373,15 @@ export function AdminSessionsPage() {
       </div></div>
 
       {showAddModal && createPortal(
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 99999 }}>
-          <div className="card fade-in" style={{ width: '100%', maxWidth: 450, padding: 32, borderRadius: 24, boxShadow: '0 20px 40px rgba(0,0,0,0.2)' }} onClick={e => e.stopPropagation()}>
+        <div className="admin-modal-backdrop" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 99999 }}>
+          <div className="card fade-in admin-modal-shell" style={{ width: '100%', maxWidth: 450, padding: 32, borderRadius: 24, boxShadow: '0 20px 40px rgba(0,0,0,0.2)' }} onClick={e => e.stopPropagation()}>
             <h3 style={{ marginBottom: 24, fontSize: 22, fontWeight: 700 }}>Create New Session</h3>
             <form onSubmit={handleCreate}><div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
               <div><label style={{ display: 'block', fontSize: 13, marginBottom: 6, fontWeight: 600, color: 'var(--text-secondary)' }}>Assign Teacher</label><select required className="form-control" style={{ width: '100%', padding: '12px 16px', borderRadius: 12 }} value={formData.teacher_id} onChange={e => setFormData({...formData, teacher_id: e.target.value})}><option value="">Select a Teacher...</option>{teachers.map(t => <option key={t.id} value={t.id}>{t.name} ({t.email})</option>)}</select></div>
               <div><label style={{ display: 'block', fontSize: 13, marginBottom: 6, fontWeight: 600, color: 'var(--text-secondary)' }}>Subject</label><input required className="form-control" style={{ width: '100%', padding: '12px 16px', borderRadius: 12 }} value={formData.subject} onChange={e => setFormData({...formData, subject: e.target.value})} placeholder="Computer Science" /></div>
               <div><label style={{ display: 'block', fontSize: 13, marginBottom: 6, fontWeight: 600, color: 'var(--text-secondary)' }}>Duration (Hours)</label><input required type="number" min="1" max="24" className="form-control" style={{ width: '100%', padding: '12px 16px', borderRadius: 12 }} value={formData.expiry_hours} onChange={e => setFormData({...formData, expiry_hours: parseInt(e.target.value)})} /></div>
             </div>
-            <div style={{ display: 'flex', gap: 12, marginTop: 32 }}>
+            <div className="admin-modal-actions" style={{ display: 'flex', gap: 12, marginTop: 32 }}>
               <button type="button" className="btn btn-secondary" style={{ flex: 1, padding: 12, borderRadius: 12 }} onClick={() => setShowAddModal(false)}>Cancel</button>
               <button type="submit" className="btn btn-primary" style={{ flex: 1, padding: 12, borderRadius: 12 }}>Create Session</button>
             </div></form>
@@ -462,7 +462,7 @@ export function AdminAttendancePage() {
       </div>
 
       <div className="dashboard-toolbar" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-        <div className="dashboard-toolbar-left" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+        <div className="dashboard-toolbar-left admin-toolbar-pills" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <h3>Attendance Logs</h3>
           {/* Filter pills */}
           {['all', 'present', 'absent', 'fraud'].map(f => (
@@ -478,14 +478,14 @@ export function AdminAttendancePage() {
           <button className="btn btn-sm btn-secondary" onClick={handleExportExcel} style={{ display: 'flex', alignItems: 'center', gap: 6, fontWeight: 600 }}>
             <span style={{ color: '#16a34a' }}>Excel</span> Export
           </button>
-          <div className="input-icon-wrap dashboard-toolbar-search" style={{ width: 220 }}>
+          <div className="input-icon-wrap dashboard-toolbar-search admin-search" style={{ width: 220 }}>
             <Search size={15} className="icon" style={{ left: 14 }} />
             <input className="form-control" style={{ paddingLeft: 40, borderRadius: 20 }} placeholder="Search..." value={search} onChange={e => setSearch(e.target.value)} />
           </div>
         </div>
       </div>
-      <div className="card"><div className="card-body" style={{ padding: 0 }}>
-        <table className="data-table"><thead><tr>
+      <div className="card"><div className="card-body admin-table-wrap" style={{ padding: 0 }}>
+        <table className="data-table admin-data-table"><thead><tr>
           <th>#</th><th>Student</th><th>Subject</th><th>Date / Time</th><th>Device</th><th style={{ width: 160 }}>Status</th>
         </tr></thead><tbody>
           {filtered.map((r, i) => (
@@ -540,8 +540,8 @@ export function AdminCommsPage() {
   return (
     <AdminLayout title="Communications" subtitle="Notification & Message Logs">
       {selectedMsg && createPortal(
-        <div className="fade-in" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 99999 }}>
-          <div className="card pop-in" style={{ width: '100%', maxWidth: 500, padding: 32, borderRadius: 24, boxShadow: '0 20px 40px rgba(0,0,0,0.2)' }}>
+        <div className="fade-in admin-modal-backdrop" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 99999 }}>
+          <div className="card pop-in admin-modal-shell" style={{ width: '100%', maxWidth: 500, padding: 32, borderRadius: 24, boxShadow: '0 20px 40px rgba(0,0,0,0.2)' }}>
             <h3 style={{ marginBottom: 12, fontSize: 20, fontWeight: 700 }}>Message Detail</h3>
             <div style={{ fontSize: 14, color: 'var(--text-secondary)', marginBottom: 24 }}>
               <strong>To:</strong> {selectedMsg.student_name} <br/>
@@ -554,8 +554,8 @@ export function AdminCommsPage() {
         </div>, document.body
       )}
       <h3 style={{ marginBottom: 20 }}>Notification Log</h3>
-      <div className="card"><div className="card-body" style={{ padding: 0 }}>
-        <table className="data-table"><thead><tr>
+      <div className="card"><div className="card-body admin-table-wrap" style={{ padding: 0 }}>
+        <table className="data-table admin-data-table"><thead><tr>
           <th>Type</th><th>Recipient</th><th>Subject</th><th>Status</th><th>Timestamp</th><th>Action</th>
         </tr></thead><tbody>
           {comms.map(c => (
