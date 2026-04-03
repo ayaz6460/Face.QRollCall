@@ -25,6 +25,20 @@ function normalizeLocation(location) {
   return normalized;
 }
 
+function cosineDistance(a, b) {
+  if (!Array.isArray(a) || !Array.isArray(b) || a.length !== b.length) return 1.0;
+  let dot = 0, normA = 0, normB = 0;
+  for (let i = 0; i < a.length; i++) {
+    const ai = Number(a[i]) || 0;
+    const bi = Number(b[i]) || 0;
+    dot   += ai * bi;
+    normA += ai * ai;
+    normB += bi * bi;
+  }
+  if (normA === 0 || normB === 0) return 1.0;
+  return 1.0 - dot / (Math.sqrt(normA) * Math.sqrt(normB));
+}
+
 /**
  * POST /api/mark-attendance
  */
@@ -46,6 +60,39 @@ router.post('/mark-attendance', async (req, res) => {
     if (stErr) throw stErr;
     const student = students?.[0];
     if (!student) return res.status(404).json({ error: 'Student not found' });
+
+    // ── Face verification ─────────────────────────────────────────────────
+    try {
+      const clientDescriptor = req.body.faceDescriptor;
+      if (student.face_descriptor) {
+        if (!Array.isArray(clientDescriptor) || clientDescriptor.length === 0) {
+          return res.status(400).json({ success: false, error: 'faceDescriptor required for verification' });
+        }
+        // Use cosine distance — matches the Python ArcFace service (range 0-1, lower = more similar)
+        // ArcFace 512-d cosine threshold: 0.40 (same default as Python /verify endpoint)
+        const dist = cosineDistance(student.face_descriptor, clientDescriptor);
+        const THRESHOLD = parseFloat(process.env.FACE_MATCH_THRESHOLD) || 0.60;
+        console.log(`[face] cosine dist=${dist.toFixed(4)}, threshold=${THRESHOLD}, match=${dist <= THRESHOLD}, storedLen=${student.face_descriptor.length}, liveLen=${clientDescriptor.length}`);
+        if (!Number.isFinite(dist) || dist > THRESHOLD) {
+          return res.status(403).json({
+            success: false,
+            error: `Face verification failed — distance ${dist.toFixed(4)} exceeds threshold ${THRESHOLD}`,
+            reason: 'face_mismatch',
+            distance: dist
+          });
+        }
+      } else {
+        return res.status(422).json({ success: false, error: 'No enrolled face found. Please enroll your face first via your profile.' });
+      }
+    } catch (fvErr) {
+      console.error('[face-verification]', fvErr);
+      return res.status(500).json({ success: false, error: 'Face verification error' });
+    }
+
+    // ── Session null guard (after face check so error is descriptive) ─────
+    if (!session) {
+      return res.status(404).json({ success: false, error: 'No active session found for this token. The session may have ended or not started yet.' });
+    }
 
     // Fraud detection
     const fraudResult = fraudDetection.check({ token, session, student, deviceId, location: normalizedLocation });
@@ -81,7 +128,7 @@ router.post('/mark-attendance', async (req, res) => {
 
       if (session) req.io.to(`teacher-${session.teacher_id}`).emit('fraud-alert', eventPayload);
       req.io.to('admins').emit('fraud-alert', eventPayload);
-      return res.status(403).json({ success: false, fraud: true, reason: fraudResult.reason, riskScore: fraudResult.riskScore });
+      return res.status(403).json({ success: false, fraud: true, error: fraudResult.reason, reason: fraudResult.reason, riskScore: fraudResult.riskScore });
     }
 
     // Duplicate check

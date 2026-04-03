@@ -196,13 +196,18 @@ router.post('/sessions', requireAdmin, async (req, res) => {
     
     const token = require('uuid').v4();
     const expiry = Date.now() + (expiry_hours || 1) * 60 * 60 * 1000;
+    
+    // Generate 8 digit alphanumeric code
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let session_code = '';
+    for (let i = 0; i < 8; i++) session_code += chars.charAt(Math.floor(Math.random() * chars.length));
 
     const { error } = await supabase.from('sessions').insert([{
-      token, subject, teacher_id, expiry, ended: false, started: false
+      token, subject, teacher_id, expiry, ended: false, started: false, session_code
     }]);
 
     if (error) throw error;
-    res.json({ success: true, session: { token, subject, teacher_id, expiry } });
+    res.json({ success: true, session: { token, subject, teacher_id, expiry, session_code } });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

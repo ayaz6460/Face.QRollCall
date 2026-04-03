@@ -353,6 +353,25 @@ router.put('/students/:id', async (req, res) => {
 });
 
 /**
+ * PUT /api/students/:id/face-descriptor
+ * Store a student's face descriptor (client-produced Float32Array -> array)
+ */
+router.put('/students/:id/face-descriptor', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { descriptor } = req.body;
+    if (!Array.isArray(descriptor) || descriptor.length === 0) return res.status(400).json({ error: 'Invalid descriptor' });
+
+    const { error } = await supabase.from('students').update({ face_descriptor: descriptor }).eq('id', id);
+    if (error) throw error;
+    res.json({ success: true });
+  } catch (err) {
+    console.error('[update-face-descriptor]', err);
+    res.status(500).json({ error: 'Failed to update face descriptor', details: err.message || JSON.stringify(err) });
+  }
+});
+
+/**
  * PUT /api/students/:id/password
  * Directly updates a student's login password (teacher/admin action)
  */

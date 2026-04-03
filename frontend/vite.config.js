@@ -15,6 +15,12 @@ export default defineConfig({
         ws: true,
         changeOrigin: true,
       },
+      // Python face service (DeepFace / ArcFace)
+      '/face-api': {
+        target: 'http://localhost:8001',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/face-api/, ''),
+      },
     },
   },
 })

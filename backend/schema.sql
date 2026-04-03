@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS students (
   email TEXT UNIQUE NOT NULL,
   parent_phone TEXT,
   device_id TEXT,
+  face_descriptor JSONB,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
