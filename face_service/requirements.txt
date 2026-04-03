@@ -1,7 +1,7 @@
 fastapi
 uvicorn[standard]
-deepface
+deepface==0.0.75
+tensorflow==2.10.0
 numpy
 Pillow
 python-multipart
-tf-keras
