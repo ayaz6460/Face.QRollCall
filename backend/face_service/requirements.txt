@@ -4,4 +4,3 @@ deepface
 numpy
 Pillow
 python-multipart
-tf-keras
