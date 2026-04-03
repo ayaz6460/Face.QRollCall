@@ -1,0 +1,7 @@
+fastapi
+uvicorn[standard]
+deepface
+numpy
+Pillow
+python-multipart
+tf-keras

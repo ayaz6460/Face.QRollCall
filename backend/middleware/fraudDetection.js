@@ -43,26 +43,24 @@ function check({ token, session, student, deviceId, location }) {
     reasons.push('Device ID mismatch — possible proxy attempt');
   }
 
-  // 3. Geofence check
+  // 3. Geofence check — only enforced when the teacher set a location for the session
   const hasSessionGeofence = Number.isFinite(Number(session?.latitude)) && Number.isFinite(Number(session?.longitude));
   const hasLocation = Number.isFinite(Number(location?.lat)) && Number.isFinite(Number(location?.lng));
 
-  if (hasLocation) {
-    const targetLat = Number(session?.latitude || GEOFENCE.lat);
-    const targetLng = Number(session?.longitude || GEOFENCE.lng);
-    const allowedRadius = session?.allowed_radius || GEOFENCE.radiusMeters;
-    
-    // Only perform check if a target location is actually set
-    if (targetLat && targetLng) {
+  if (hasSessionGeofence) {
+    if (hasLocation) {
+      const targetLat = Number(session.latitude);
+      const targetLng = Number(session.longitude);
+      const allowedRadius = session.allowed_radius || GEOFENCE.radiusMeters;
       const dist = haversineDistance(location.lat, location.lng, targetLat, targetLng);
       if (dist > allowedRadius) {
         riskScore += 50;
         reasons.push(`Outside allowed radius (${Math.round(dist)}m from teacher)`);
       }
+    } else {
+      riskScore += 60;
+      reasons.push('Location unavailable — enable GPS for attendance verification');
     }
-  } else if (hasSessionGeofence) {
-    riskScore += 60;
-    reasons.push('Location unavailable — enable GPS for attendance verification');
   }
 
   // 4. Rapid repeat attempts
